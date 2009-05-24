@@ -139,7 +139,7 @@ class anchor_utils {
 		
 		$anchor['attr'] = shortcode_parse_atts($match[1]);
 		
-		if ( !is_array($anchor['attr']) || empty($anchor['href']) ) # shortcode parser error or not a link
+		if ( !is_array($anchor['attr']) || empty($anchor['attr']['href']) ) # parser error or not a link
 			return false;
 		
 		foreach ( array('class', 'rel') as $attr ) {
