@@ -66,6 +66,9 @@ class anchor_utils {
 		# parse anchor
 		$anchor = anchor_utils::parse_anchor($match);
 		
+		if ( !$anchor )
+			return $match[0];
+		
 		# filter anchor
 		$anchor = apply_filters('ob_filter_anchor', $anchor);
 		
@@ -112,6 +115,9 @@ class anchor_utils {
 		# parse anchor
 		$anchor = anchor_utils::parse_anchor($match);
 		
+		if ( !$anchor )
+			return $match[0];
+		
 		# filter anchor
 		$anchor = apply_filters('filter_anchor', $anchor);
 		
@@ -133,8 +139,8 @@ class anchor_utils {
 		
 		$anchor['attr'] = shortcode_parse_atts($match[1]);
 		
-		if ( !is_array($anchor['attr']) ) # shortcode parser error
-			return $match[0];
+		if ( !is_array($anchor['attr']) || empty($anchor['href']) ) # shortcode parser error or not a link
+			return false;
 		
 		foreach ( array('class', 'rel') as $attr ) {
 			if ( !isset($anchor['attr'][$attr]) ) {
