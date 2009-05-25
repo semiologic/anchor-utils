@@ -26,8 +26,10 @@ class anchor_utils {
 	 **/
 
 	function wp_head() {
-		if ( has_filter('ob_filter_anchor') )
+		if ( has_filter('ob_filter_anchor') ) {
 			ob_start(array('anchor_utils', 'ob_filter'));
+			add_action('wp_footer', array('anchor_utils', 'ob_flush'), 1000000);
+		}
 	} # wp_head()
 	
 	
@@ -39,26 +41,41 @@ class anchor_utils {
 	 **/
 
 	function ob_filter($text) {
+		$text = anchor_utils::escape($text);
+		
 		$text = preg_replace_callback("/
 			<\s*a\s+
 			([^<>]+)
 			>
 			(.+?)
 			<\s*\/\s*a\s*>
-			/isx", array('anchor_utils', 'ob_callback'), $text);
+			/isx", array('anchor_utils', 'ob_filter_callback'), $text);
+		
+		$text = anchor_utils::unescape($text);
 		
 		return $text;
 	} # ob_filter()
 	
 	
 	/**
-	 * ob_callback()
+	 * ob_flush()
+	 *
+	 * @return void
+	 **/
+
+	function ob_flush() {
+		ob_end_flush();
+	} # ob_flush()
+	
+	
+	/**
+	 * ob_filter_callback()
 	 *
 	 * @param array $match
 	 * @return string $str
 	 **/
 
-	function ob_callback($match) {
+	function ob_filter_callback($match) {
 		# skip empty anchors
 		if ( !trim($match[2]) )
 			return $match[0];
@@ -74,7 +91,7 @@ class anchor_utils {
 		
 		# return anchor
 		return anchor_utils::build_anchor($anchor);
-	} # ob_callback()
+	} # ob_filter_callback()
 	
 	
 	/**
@@ -88,6 +105,8 @@ class anchor_utils {
 		if ( !has_filter('filter_anchor') )
 			return $text;
 		
+		$text = anchor_utils::escape($text);
+		
 		$text = preg_replace_callback("/
 			<\s*a\s+
 			([^<>]+)
@@ -95,6 +114,8 @@ class anchor_utils {
 			(.+?)
 			<\s*\/\s*a\s*>
 			/isx", array('anchor_utils', 'filter_callback'), $text);
+		
+		$text = anchor_utils::unescape($text);
 		
 		return $text;
 	} # filter()
@@ -179,5 +200,88 @@ class anchor_utils {
 		
 		return $str;
 	} # build_anchor()
+	
+	
+	/**
+	 * escape()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function escape($text) {
+		global $anchor_filter_escape;
+		
+		if ( !isset($anchor_filter_escape) )
+			$anchor_filter_escape = array();
+		
+		foreach ( array(
+			'head' => "/
+				.*?
+				<\s*\/\s*head\s*>
+				/isx",
+			'blocks' => "/
+				<\s*(script|object)(?:\s.*?)?>
+				.*?
+				<\s*\/\s*\\1\s*>
+				/isx"
+			) as $regex ) {
+			$text = preg_replace_callback($regex, array('anchor_utils', 'escape_callback'), $text);
+		}
+		
+		return $text;
+	} # escape()
+	
+	
+	/**
+	 * escape_callback()
+	 *
+	 * @param array $match
+	 * @return string $text
+	 **/
+
+	function escape_callback($match) {
+		global $anchor_filter_escape;
+		
+		$tag_id = "----escape_anchor_utils:" . strtolower(md5($match[0])) . "----";
+		$anchor_filter_escape[$tag_id] = $match[0];
+		
+		return $tag_id;
+	} # escape_callback()
+	
+	
+	/**
+	 * unescape()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function unescape($text) {
+		global $anchor_filter_escape;
+		
+		if ( !$anchor_filter_escape )
+			return $text;
+		
+		$text = preg_replace_callback("/
+			----escape_anchor_utils:[a-f0-9]{32}----
+			/x", array('anchor_utils', 'unescape_callback'), $text);
+		
+		return $text;
+	} # unescape()
+	
+	
+	/**
+	 * unescape_callback()
+	 *
+	 * @param array $match
+	 * @return string $text
+	 **/
+
+	function unescape_callback($match) {
+		global $anchor_filter_escape;
+		
+		return $anchor_filter_escape[$match[0]];
+	} # unescape_callback()
 } # anchor_utils
 ?>
