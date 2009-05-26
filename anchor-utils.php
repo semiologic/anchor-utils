@@ -222,7 +222,7 @@ class anchor_utils {
 				<\s*(script|object)(?:\s.*?)?>
 				.*?
 				<\s*\/\s*\\1\s*>
-				/isx"
+				/isx",
 			) as $regex ) {
 			$text = preg_replace_callback($regex, array('anchor_utils', 'escape_callback'), $text);
 		}
