@@ -208,10 +208,10 @@ class anchor_utils {
 	 **/
 
 	function escape($text) {
-		global $anchor_filter_escape;
+		global $escape_anchor_filter;
 		
-		if ( !isset($anchor_filter_escape) )
-			$anchor_filter_escape = array();
+		if ( !isset($escape_anchor_filter) )
+			$escape_anchor_filter = array();
 		
 		foreach ( array(
 			'head' => "/
@@ -239,10 +239,10 @@ class anchor_utils {
 	 **/
 
 	function escape_callback($match) {
-		global $anchor_filter_escape;
+		global $escape_anchor_filter;
 		
 		$tag_id = "----escape_anchor_utils:" . strtolower(md5($match[0])) . "----";
-		$anchor_filter_escape[$tag_id] = $match[0];
+		$escape_anchor_filter[$tag_id] = $match[0];
 		
 		return $tag_id;
 	} # escape_callback()
@@ -256,9 +256,9 @@ class anchor_utils {
 	 **/
 
 	function unescape($text) {
-		global $anchor_filter_escape;
+		global $escape_anchor_filter;
 		
-		if ( !$anchor_filter_escape )
+		if ( !$escape_anchor_filter )
 			return $text;
 		
 		$text = preg_replace_callback("/
@@ -277,9 +277,9 @@ class anchor_utils {
 	 **/
 
 	function unescape_callback($match) {
-		global $anchor_filter_escape;
+		global $escape_anchor_filter;
 		
-		return $anchor_filter_escape[$match[0]];
+		return $escape_anchor_filter[$match[0]];
 	} # unescape_callback()
 } # anchor_utils
 ?>
