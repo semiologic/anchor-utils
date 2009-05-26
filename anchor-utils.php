@@ -219,7 +219,7 @@ class anchor_utils {
 				<\s*\/\s*head\s*>
 				/isx",
 			'blocks' => "/
-				<\s*(script|object)(?:\s.*?)?>
+				<\s*(script|object|textarea)(?:\s.*?)?>
 				.*?
 				<\s*\/\s*\\1\s*>
 				/isx",
