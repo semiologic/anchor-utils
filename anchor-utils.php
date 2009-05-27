@@ -28,7 +28,8 @@ class anchor_utils {
 	function wp_head() {
 		if ( has_filter('ob_filter_anchor') ) {
 			ob_start(array('anchor_utils', 'ob_filter'));
-			add_action('wp_footer', array('anchor_utils', 'ob_flush'), 1000000);
+			add_action('wp_footer', array('anchor_utils', 'ob_flush'), 10000);
+			remove_action('wp_head', array('anchor_utils', 'wp_head'), 10000);
 		}
 	} # wp_head()
 	
@@ -65,6 +66,7 @@ class anchor_utils {
 
 	function ob_flush() {
 		ob_end_flush();
+		remove_action('wp_footer', array('anchor_utils', 'ob_flush'), 10000);
 	} # ob_flush()
 	
 	
