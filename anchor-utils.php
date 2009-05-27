@@ -16,22 +16,22 @@ add_filter('the_excerpt', array('anchor_utils', 'filter'), 100);
 add_filter('widget_text', array('anchor_utils', 'filter'), 100);
 add_filter('comment_text', array('anchor_utils', 'filter'), 100);
 
-add_action('wp_head', array('anchor_utils', 'wp_head'), 10000);
+add_action('wp_head', array('anchor_utils', 'ob_start'), 10000);
 
 class anchor_utils {
 	/**
-	 * wp_head()
+	 * ob_start()
 	 *
 	 * @return void
 	 **/
 
-	function wp_head() {
+	function ob_start() {
 		if ( has_filter('ob_filter_anchor') ) {
 			ob_start(array('anchor_utils', 'ob_filter'));
 			add_action('wp_footer', array('anchor_utils', 'ob_flush'), 10000);
-			remove_action('wp_head', array('anchor_utils', 'wp_head'), 10000);
+			remove_action('wp_head', array('anchor_utils', 'ob_start'), 10000);
 		}
-	} # wp_head()
+	} # ob_start()
 	
 	
 	/**
