@@ -26,10 +26,15 @@ class anchor_utils {
 	 **/
 
 	function ob_start() {
+		static $done = false;
+		
+		if ( $done )
+			return;
+		
 		if ( has_filter('ob_filter_anchor') ) {
 			ob_start(array('anchor_utils', 'ob_filter'));
 			add_action('wp_footer', array('anchor_utils', 'ob_flush'), 10000);
-			remove_action('wp_head', array('anchor_utils', 'ob_start'), 10000);
+			$done = true;
 		}
 	} # ob_start()
 	
