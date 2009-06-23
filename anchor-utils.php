@@ -248,7 +248,7 @@ class anchor_utils {
 	function escape_callback($match) {
 		global $escape_anchor_filter;
 		
-		$tag_id = "----escape_anchor_utils:" . strtolower(md5($match[0])) . "----";
+		$tag_id = "----escape_anchor_utils:" . md5($match[0]) . "----";
 		$escape_anchor_filter[$tag_id] = $match[0];
 		
 		return $tag_id;
