@@ -268,25 +268,9 @@ class anchor_utils {
 		if ( !$escape_anchor_filter )
 			return $text;
 		
-		$text = preg_replace_callback("/
-			----escape_anchor_utils:[a-f0-9]{32}----
-			/x", array('anchor_utils', 'unescape_callback'), $text);
+		$unescape = array_reverse($escape_anchor_filter);
 		
-		return $text;
+		return str_replace(array_keys($unescape), array_values($unescape), $text);
 	} # unescape()
-	
-	
-	/**
-	 * unescape_callback()
-	 *
-	 * @param array $match
-	 * @return string $text
-	 **/
-
-	function unescape_callback($match) {
-		global $escape_anchor_filter;
-		
-		return $escape_anchor_filter[$match[0]];
-	} # unescape_callback()
 } # anchor_utils
 ?>
