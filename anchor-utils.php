@@ -47,6 +47,9 @@ class anchor_utils {
 	 **/
 
 	function ob_filter($text) {
+		global $escape_anchor_filter;
+		$escape_anchor_filter = array();
+		
 		$text = anchor_utils::escape($text);
 		
 		$text = preg_replace_callback("/
@@ -111,6 +114,9 @@ class anchor_utils {
 	function filter($text) {
 		if ( !has_filter('filter_anchor') )
 			return $text;
+		
+		global $escape_anchor_filter;
+		$escape_anchor_filter = array();
 		
 		$text = anchor_utils::escape($text);
 		
