@@ -73,8 +73,13 @@ class anchor_utils {
 	 **/
 
 	function ob_flush() {
+		static $done = true;
+		
+		if ( $done )
+			return;
+		
 		ob_end_flush();
-		remove_action('wp_footer', array('anchor_utils', 'ob_flush'), 10000);
+		$done = true;
 	} # ob_flush()
 	
 	
