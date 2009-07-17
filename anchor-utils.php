@@ -176,7 +176,8 @@ class anchor_utils {
 		$anchor = array();
 		$anchor['attr'] = shortcode_parse_atts($match[1]);
 		
-		if ( !is_array($anchor['attr']) || empty($anchor['attr']['href']) ) # parser error or not a link
+		if ( !is_array($anchor['attr']) || empty($anchor['attr']['href']) # parser error or no link
+			|| $anchor['attr']['href'] != clean_url($anchor['attr']['href'], null, 'db') ) # likely a script
 			return false;
 		
 		foreach ( array('class', 'rel') as $attr ) {
@@ -190,6 +191,8 @@ class anchor_utils {
 		
 		$anchor['body'] = $match[2];
 		
+		$anchor['attr']['href'] = @html_entity_decode($anchor['attr']['href'], ENT_COMPAT, get_option('blog_charset'));
+		
 		return $anchor;
 	} # parse_anchor()
 	
@@ -202,6 +205,8 @@ class anchor_utils {
 	 **/
 
 	function build_anchor($anchor) {
+		$anchor['attr']['href'] = clean_url($anchor['attr']['href']);
+		
 		$str = '<a ';
 		foreach ( $anchor['attr'] as $k => $v ) {
 			if ( is_array($v) ) {
