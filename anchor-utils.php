@@ -11,13 +11,6 @@
  * @package Anchor Utils
  **/
 
-add_filter('the_content', array('anchor_utils', 'filter'), 100);
-add_filter('the_excerpt', array('anchor_utils', 'filter'), 100);
-add_filter('widget_text', array('anchor_utils', 'filter'), 100);
-add_filter('comment_text', array('anchor_utils', 'filter'), 100);
-
-add_action('wp_head', array('anchor_utils', 'ob_start'), 10000);
-
 class anchor_utils {
 	/**
 	 * ob_start()
@@ -289,4 +282,11 @@ class anchor_utils {
 		return str_replace(array_keys($unescape), array_values($unescape), $text);
 	} # unescape()
 } # anchor_utils
+
+add_filter('the_content', array('anchor_utils', 'filter'), 100);
+add_filter('the_excerpt', array('anchor_utils', 'filter'), 100);
+add_filter('widget_text', array('anchor_utils', 'filter'), 100);
+add_filter('comment_text', array('anchor_utils', 'filter'), 100);
+
+add_action('wp_head', array('anchor_utils', 'ob_start'), 10000);
 ?>
