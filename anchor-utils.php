@@ -48,7 +48,6 @@ class anchor_utils {
 		}
 	} # ob_start()
 	
-	
 	/**
 	 * ob_filter()
 	 *
