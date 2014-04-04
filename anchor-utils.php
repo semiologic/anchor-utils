@@ -5,8 +5,8 @@
  * Version: 1.4
  */
 
-if ( @ini_get('pcre.backtrack_limit') <= 750000 )
-	@ini_set('pcre.backtrack_limit', 750000);
+if ( @ini_get('pcre.backtrack_limit') <= 1000000 )
+	@ini_set('pcre.backtrack_limit', 1000000);
 if ( @ini_get('pcre.recursion_limit') <= 250000 )
 	@ini_set('pcre.recursion_limit', 250000);
 
@@ -22,13 +22,13 @@ class anchor_utils {
      * constructor
      */
     public function __construct( $inc_text_widgets = true ) {
-        add_filter('the_content', array($this, 'filter'), 100);
-        add_filter('the_excerpt', array($this, 'filter'), 100);
-        add_filter('comment_text', array($this, 'filter'), 100);
+        add_filter('the_content', array($this, 'filter'), 100000);
+        add_filter('the_excerpt', array($this, 'filter'), 100000);
+        add_filter('comment_text', array($this, 'filter'), 100000);
 	    if ( $inc_text_widgets )
-	        add_filter('widget_text', array($this, 'filter'), 100);
+	        add_filter('widget_text', array($this, 'filter'), 100000);
 
-        add_action('wp_head', array($this, 'ob_start'), 10000);
+        add_action('wp_head', array($this, 'ob_start'), 100000);
     } #anchor_utils
 
 
@@ -46,7 +46,7 @@ class anchor_utils {
 		
 		if ( has_filter('ob_filter_anchor') ) {
 			ob_start(array($this, 'ob_filter'));
-			add_action('wp_footer', array($this, 'ob_flush'), 10000);
+			add_action('wp_footer', array($this, 'ob_flush'), 100000);
 			$done = true;
 		}
 	} # ob_start()
