@@ -2,7 +2,7 @@
 /*
  * Anchor Utils
  * Author: Denis de Bernardy & Mike Koepke <http://www.semiologic.com>
- * Version: 1.4
+ * Version: 1.5
  */
 
 if ( @ini_get('pcre.backtrack_limit') <= 1000000 )
@@ -112,10 +112,13 @@ class anchor_utils {
 		
 		if ( !$anchor )
 			return $match[0];
-		
+
+		$anchor['current_filter'] = current_filter();
+
 		# filter anchor
-		$anchor = apply_filters('ob_filter_anchor', $anchor);
-		
+		$anchor = apply_filters( 'ob_filter_anchor', $anchor );
+		unset( $anchor['current_filter'] );
+
 		# return anchor
 		return $this->build_anchor($anchor);
 	} # ob_filter_callback()
@@ -168,10 +171,13 @@ class anchor_utils {
 		
 		if ( !$anchor )
 			return $match[0];
-		
+
+		$anchor['current_filter'] = current_filter();
+
 		# filter anchor
-		$anchor = apply_filters('filter_anchor', $anchor);
-		
+		$anchor = apply_filters( 'filter_anchor', $anchor );
+		unset( $anchor['current_filter'] );
+
 		# return anchor
 		return $this->build_anchor($anchor);
 	} # filter_callback()
